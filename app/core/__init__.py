@@ -1,0 +1,1 @@
+"""Peças usadas por todas as camadas: configuração, segurança, exceções e datas."""

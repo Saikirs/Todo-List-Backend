@@ -1,0 +1,1 @@
+"""Infraestrutura do banco de dados: conexão, sessão e classe Base do ORM."""
