@@ -25,3 +25,7 @@ class UsuarioRepositorio(RepositorioBase[Usuario]):
             .filter(Usuario.email == Usuario.normalizar_email(email))
             .first()
         )
+
+    def email_existe(self, email: str) -> bool:
+        """Informa se já há usuário cadastrado com este e-mail (RN-01)."""
+        return self.buscar_por_email(email) is not None

@@ -1,7 +1,9 @@
 """Endpoints de usuário: cadastro.
 
 A rota traduz HTTP em uma chamada de serviço e devolve o resultado. Não há
-consulta ao banco, `if` de regra de negócio nem `raise HTTPException`.
+consulta ao banco, `if` de regra de negócio nem `raise HTTPException`: os erros
+de negócio sobem como exceções de domínio e são convertidos em código de status
+por `main.py`.
 """
 
 from typing import Annotated
@@ -20,6 +22,7 @@ router = APIRouter(prefix="/usuarios", tags=["Usuários"])
     response_model=UsuarioOut,
     status_code=status.HTTP_201_CREATED,
     summary="Cadastrar usuário",
+    responses={409: {"description": "E-mail já cadastrado"}},
 )
 def cadastrar_usuario(
     dados: UsuarioCreate,
