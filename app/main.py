@@ -6,13 +6,14 @@ from typing import Any
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-
 from app.api.routers import usuarios
+from app.core.config import obter_configuracao
 from app.core.exceptions import (
     EmailJaCadastrado,
     ErroDeDominio,
     RecursoNaoEncontrado,
     RegraDeNegocioViolada,
+    NaoAutenticado,
 )
 from app.db.database import criar_tabelas
 
@@ -22,13 +23,19 @@ STATUS_POR_ERRO: tuple[tuple[type[ErroDeDominio], int], ...] = (
     (RecursoNaoEncontrado, 404),
     (EmailJaCadastrado, 409),
     (RegraDeNegocioViolada, 422),
-    (ErroDeDominio, 400),
+    (ErroDeDominio, 401),
+    (NaoAutenticado, 401),
 )
 
 
 @asynccontextmanager
 async def ciclo_de_vida(app: FastAPI) -> AsyncIterator[None]:
-    """Prepara o banco na subida da aplicação: cria as tabelas que faltam."""
+    """Confere a configuração e prepara o banco na subida da aplicação.
+    `segredo_jwt()` é chamado aqui de propósito: sem `JWT_SECRET`, a API se
+    recusa a subir com uma mensagem explicando o que fazer - em vez de subir
+    e só falhar no primeiro login.
+    """
+    obter_configuracao().segredo_jwt()
     criar_tabelas()
     yield
 
@@ -36,7 +43,7 @@ async def ciclo_de_vida(app: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(
     title="Todo List API",
     description="Backend do ToDo List - curso Desenvolvedor Full Stack (SENAC).",
-    version="0.3.0",
+    version="0.4.0",
     lifespan=ciclo_de_vida,
 )
 

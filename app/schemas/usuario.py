@@ -1,4 +1,4 @@
-"""Contrato JSON de usuário."""
+"""Contrato JSON de usuário e de sessão (login)."""
 
 from pydantic import EmailStr, Field, field_validator
 
@@ -24,6 +24,13 @@ class UsuarioCreate(EsquemaDeEntrada):
         return senha
 
 
+class UsuarioLogin(EsquemaDeEntrada):
+    """Credenciais recebidas no login."""
+
+    email: EmailStr
+    senha: str
+
+
 class UsuarioOut(EsquemaDeSaida):
     """Dados devolvidos sobre um usuário.
 
@@ -35,3 +42,16 @@ class UsuarioOut(EsquemaDeSaida):
     nome: str
     email: EmailStr
     criado_em: DataHoraUTC
+
+
+class SessaoOut(EsquemaDeSaida):
+    """Resposta do login: o token de acesso e quem está logado.
+
+    O cliente guarda `accessToken` e o envia em toda requisição protegida, no
+    cabeçalho `Authorization: Bearer <accessToken>`.
+    """
+
+    access_token: str
+    token_type: str = "bearer"
+    expira_em: DataHoraUTC
+    usuario: UsuarioOut

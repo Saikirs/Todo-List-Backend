@@ -5,6 +5,7 @@ psycopg[binary]==3.3.6
 pydantic[email]==2.13.5
 python-dotenv==1.2.3
 bcrypt==5.0.0
+PyJWT==2.15.1       # tokens de autenticação.
 
 pytest==9.1.1
 httpx==0.28.1
