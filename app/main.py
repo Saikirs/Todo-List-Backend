@@ -43,7 +43,7 @@ async def ciclo_de_vida(app: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(
     title="Todo List API",
     description="Backend do ToDo List - curso Desenvolvedor Full Stack (SENAC).",
-    version="0.4.0",
+    version="0.5.0",
     lifespan=ciclo_de_vida,
 )
 
@@ -61,7 +61,8 @@ async def tratar_erro_de_dominio(
     codigo = next(
         (codigo for tipo, codigo in STATUS_POR_ERRO if isinstance(excecao, tipo)), 400
     )
-    return JSONResponse(status_code=codigo, content={"detail": excecao.mensagem})
+    cabecalhos = {"WWW-Authenticate": "Bearer"} if codigo == 401 else None
+    return JSONResponse(status_code=codigo, content={"detail": excecao.mensagem}, headers=cabecalhos)
 
 
 def _mensagem_de_validacao(erro: dict[str, Any]) -> tuple[str, str]:
