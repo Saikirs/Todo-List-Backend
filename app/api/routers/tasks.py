@@ -7,7 +7,7 @@ ler, alterar ou apagar a tarefa de outra pessoa.
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Response ,status
 
 from app.api.dependencies import UsuarioAtual, obter_tarefa_servico
 from app.schemas import TarefaCreate, TarefaOut
@@ -36,3 +36,21 @@ def criar_task(dados: TarefaCreate, usuario: UsuarioAtual, servico: Servico) -> 
         prioridade=dados.prioridade,
         prazo=dados.prazo,
     )
+
+@router.get(
+    "",
+    response_model=list[TarefaOut],
+    summary="Listar as tarefas do usuário logado",
+)
+
+def listar_tasks(usuario: UsuarioAtual, servico: Servico, response: Response) -> list[TarefaOut]:
+    """Lista as tarefas do usuário logado, das mais recentes para as mais antigas.
+    
+    O cabeçalho `X-Total-Count` traz a quantidade de tarefas.
+
+    Devolve uma lista vazia - e não 404 - quando o usuário não tem tarefas:
+    a coleção existe, apenas está vazia.
+    """
+    tarefas = servico.listar(usuario.id)
+    response.headers["X-Total-Count"] = str(len(tarefas))
+    return tarefas
