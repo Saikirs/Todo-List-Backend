@@ -83,7 +83,10 @@ def buscar_task(tarefa_id: int, usuario: UsuarioAtual, servico: Servico) -> Tare
 def atualizar_task(
     tarefa_id: int, dados: TarefaUpdate, usuario: UsuarioAtual, servico: Servico
 ) -> TarefaOut:
-    """Atualiza parcialmente uma tarefa: só os campos enviados mudam."""
+    """Atualiza parcialmente uma tarefa.
+    Quando o status muda, a data de conclusão é ajustada pela própria tarefa,
+    conforme a RN-03
+    """
     return servico.atualizar(tarefa_id, usuario.id, _montar_alteracoes(dados))
 @router.delete(
     "/{tarefa_id}",

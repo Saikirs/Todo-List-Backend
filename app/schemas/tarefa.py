@@ -26,6 +26,7 @@ class TarefaUpdate(EsquemaDeEntrada):
     """Campos que podem ser alterados. Todos opcionais (atualização parcial)."""
 
     titulo: str | None = Field(default=None, min_length=1, max_length=200)
+    status: StatusTarefa | None = None
     prioridade: PrioridadeTarefa | None = None
     prazo: date | None = None
 

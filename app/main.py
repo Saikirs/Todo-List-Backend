@@ -45,7 +45,7 @@ async def ciclo_de_vida(app: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(
     title="Todo List API",
     description="Backend do ToDo List - curso Desenvolvedor Full Stack (SENAC).",
-    version="0.8.0",
+    version="0.9.0",
     lifespan=ciclo_de_vida,
 )
 
